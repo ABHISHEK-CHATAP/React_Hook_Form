@@ -20,7 +20,7 @@ const App = () => {
                 <label>Full Name</label>
                 <input
                   type="text"
-                  className={classnames("form-control",{"is-invalid":errors.fullname})}
+                  className={classnames("form-control",{"is-invalid":errors.fullname})} //ye input exclemation mark dega error pe
                   id="fullname"
                   placeholder="Enter Your Full Name"
                   {...register("fullname", {required: "this feild is required",
