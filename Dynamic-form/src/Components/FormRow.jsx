@@ -18,6 +18,10 @@ const {append, fields, remove} = useFieldArray({
                 return(
                     <>
                     <div className="row mt-2 " key={item.id}>
+                    {/* <div className="col">
+                    ye [[name == ki feild direct {...register} me add ki ]]
+                      <input type='text' className='form-control' placeholder=' first name' name={`users[${index}].firstname`} {...register(`users[${index}].firstname`)} defaultValue={item.firstname} />
+                    </div> */}
                     <div className="col">
                       <input type='text' className='form-control' placeholder=' first name'  {...register(`users[${index}].firstname`)} defaultValue={item.firstname} />
                     </div>
