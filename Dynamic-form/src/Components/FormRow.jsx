@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{memo} from 'react'
 import { useFieldArray } from 'react-hook-form'
 
 const FormRow = ({register, control}) => {
@@ -61,4 +61,4 @@ const {append, fields, remove} = useFieldArray({
   )
 }
 
-export default FormRow
+export default memo(FormRow)

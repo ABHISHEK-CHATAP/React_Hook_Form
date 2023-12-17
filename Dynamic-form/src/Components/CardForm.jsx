@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{memo} from 'react'
 
 
 const CardForm = ({register}) => {
@@ -26,4 +26,4 @@ const CardForm = ({register}) => {
   )
 }
 
-export default CardForm
+export default memo(CardForm)
