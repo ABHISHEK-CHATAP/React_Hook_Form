@@ -1,53 +1,77 @@
 import { Step, Stepper, StepLabel, Button, Typography, Box } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { useState } from "react";
+import {useForm, FormProvider, useFormContext, Controller} from "react-hook-form"
 
 
-function getStepContent (step) {
-    if(step == 0){
-      return (
-          <>
-          <TextField id="first-name" label="First Name" fullWidth variant="outlined" placeholder="enter name" margin="normal" />
-          <TextField id="last-name" label="Last Name" fullWidth variant="outlined" placeholder=" EnterLast name" margin="normal" />
-          <TextField id="nick-name" label="Nick Name" fullWidth variant="outlined" placeholder="enter nick name" margin="normal" />
-          </>
-      )
-    }
-  else if(step == 1){
-      return (
-          <>
-            <TextField id="email" label="Email" fullWidth variant="outlined" placeholder="Enter Email" margin="normal" />
-          <TextField id="phone-number" label="Phone Number" fullWidth variant="outlined" placeholder=" Enter Phone No" margin="normal" />
-          <TextField id="Alternate-phone" label="Nick Name" fullWidth variant="outlined" placeholder="enter Alternate no" margin="normal" />
-          </>
-      )
-    }else if (step == 2){
-      return (
-          <>
-           <TextField id="adress" label="Address" fullWidth variant="outlined" placeholder="Enter Address" margin="normal" />
-          <TextField id="address 1" label="Address 1" fullWidth variant="outlined" placeholder=" Enter Address" margin="normal" />
-          <TextField id="Country" label="Country" fullWidth variant="outlined" placeholder="enter country" margin="normal" />
-          </>
-       )
-    }else if(step ==3){
-      return (
-          <>
-           <TextField id="card-number" label="Card Number" fullWidth variant="outlined" placeholder="Enter Card Number" margin="normal" />
-          <TextField id="Card-Month" label="Card Month" fullWidth variant="outlined" placeholder=" Enter Card Month" margin="normal" />
-          <TextField id="card-year" label="Card Year" fullWidth variant="outlined" placeholder="enter Card Year" margin="normal" />
-          </>
-       )
-    } else{ return " " }
+const BasicInformation = ()=>{
+const {control} = useFormContext();
+    return(
+        <>
+        <Controller control={control} name="firstName" render={({field})=>( <TextField id="first-name" label="First Name" fullWidth variant="outlined" placeholder="enter name" margin="normal" {...field} />  )} />
+        <Controller control={control} name="lastName" render={({field})=>(  <TextField id="last-name" label="Last Name" fullWidth variant="outlined" placeholder=" EnterLast name" margin="normal" {...field} />)} />
+        <Controller control={control} name="nickName" render={({field})=>(  <TextField id="nick-name" label="Nick Name" fullWidth variant="outlined" placeholder="enter nick name" margin="normal"  {...field} />  )} />    
+        </>
+    )
 }
 
+const ContactInformation = ()=>{
+const {control} = useFormContext();
+    return(
+        <>
+        <Controller control={control} name="Email" render={({field})=>( <TextField id="Email" label="Enter Email address" fullWidth variant="outlined" placeholder="enter email" margin="normal" {...field} />  )} />
+        <Controller control={control} name="phone" render={({field})=>(  <TextField id="phone" label="Enter Phone" fullWidth variant="outlined" placeholder=" Enter Phone" margin="normal" {...field} />)} />
+        <Controller control={control} name="alternatePhone" render={({field})=>(  <TextField id="AlternatePhone" label="Alternate Phone Number" fullWidth variant="outlined" placeholder="enter Alternate No" margin="normal"  {...field} />  )} />    
+      </>
+    )
+}
 
+const PersonalInformation = ()=>{
+const {control} = useFormContext();
+    return(
+        <>
+        <Controller control={control} name="adress1" render={({field})=>( <TextField id="adress1" label="Enter Address" fullWidth variant="outlined" placeholder="enter Address" margin="normal" {...field} />  )} />
+        <Controller control={control} name="adress2" render={({field})=>(  <TextField id="adress2" label="Enter Address 2" fullWidth variant="outlined" placeholder=" Enter Address 2" margin="normal" {...field} />)} />
+        <Controller control={control} name="country" render={({field})=>(  <TextField id="country" label="Enter Country" fullWidth variant="outlined" placeholder="enter Country" margin="normal"  {...field} />  )} />    
+       </>
+    )
+}
+
+const PaymentInformation = ()=>{
+const {control} = useFormContext();
+    return(
+        <>
+        <Controller control={control} name="cardNumber" render={({field})=>( <TextField id="cardNumber" label=" Card Number" fullWidth variant="outlined" placeholder="enter card Number" margin="normal" {...field} />  )} />
+        <Controller control={control} name="cardMonth" render={({field})=>(  <TextField id="cardMonth" label="Card Month" fullWidth variant="outlined" placeholder=" Enter Card Month" margin="normal" {...field} />)} />
+        <Controller control={control} name="cardYear" render={({field})=>(  <TextField id="cardYear" label="Card Year" fullWidth variant="outlined" placeholder="enter Card Year" margin="normal"  {...field} />  )} />    
+       </>
+    )
+}
+
+// ----------------------------------------------------------------- ----------------------------------------------------------------------------------------------//
+// ----------------------------------------------------------------- -----------------------------------------------------------------------------------------------//
+
+
+// ysha pr getStepContent function (step) parameter leke bs Component me render  kr raha hai 
+// toh hume ContextApi ki tarah ==> react-form me FormCOntext and FormProvider se kahi ke bhi form ka data le sakte hai 
+function getStepContent (step) {
+    if(step == 0){
+      return <BasicInformation/>
+    }  else if(step == 1){
+      return <ContactInformation/>
+    }else if (step == 2){
+      return <PersonalInformation/>
+    }else if(step ==3){
+      return <PaymentInformation/>
+    } else{ return " " }
+}
 
 
 
 const HorizontalStepper = () => {
   const CurrentSteps = [
     "Basic Information",
-    "Content Information",
+    "Contact Information",
     "Personal Information",
     "Payment",
   ];
@@ -70,9 +94,25 @@ const HorizontalStepper = () => {
   }
 
   // ------    Back and Next Buttons ---------------------
-  const handleNextStep = () => {
-    setActiveStep((step) => step + 1);
-    setSkippedStep(skippedStep.filter(step => step !== activeStep))
+  const handleNextStep = (data) => {
+    // setActiveStep((step) => step + 1);
+    // setSkippedStep(skippedStep.filter(step => step !== activeStep))
+
+    // Next Button pe hume data milta jayega
+     console.log("data",data)
+     if(activeStep == CurrentSteps.length - 1){
+        // redux use kr rahe ho to Dispatch kr sakte hoo // fech ka use karenge server pr bhejne k liye
+        fetch("https://jsonplaceholder.typicode.com/comments")
+        .then((data) => data.json())
+        .then((res)=>{
+            console.log("response",res)
+            console.log("dta",data) // ye data post karenge
+            setActiveStep((step) => step + 1); //Thank you page
+        }) 
+     }else{
+        setActiveStep((step) => step + 1);
+        setSkippedStep(skippedStep.filter(step => step !== activeStep))
+     }
   };
 
   const handlePrevousStep = () => {
@@ -80,7 +120,27 @@ const HorizontalStepper = () => {
   };
   //   console.log(CurrentSteps)
 
+  // ------    React- Hook - Form started ---------------------------------------------------
 
+  const methods = useForm({
+    defaultValues:{
+         firstName: "",
+         lastName: "",
+         nickName : "",
+         Email : "",
+         phone: "",
+         alternatePhone :"",
+         adress1:"",
+         adress2:"",
+         country:"",
+         cardNumber: "",
+         cardMonth:"",
+         cardYear:""
+    }
+  });
+//   console.log("form",methods)
+
+// const onSubmit = (data)=> console.log("data",data);
 
   return (
     <>
@@ -121,9 +181,11 @@ const HorizontalStepper = () => {
         </Typography>
       ) :( 
       <>
-        <form>
-        { getStepContent(activeStep)}
-        </form>
+
+      <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(handleNextStep)}>
+      { getStepContent(activeStep)}
+      
 
       <Box sx={{display:"flex", justifyContent:"space-between"}} >
         <Button
@@ -143,10 +205,13 @@ const HorizontalStepper = () => {
             )
         }
 
-        <Button variant="contained" onClick={handleNextStep}>
+        <Button variant="contained" type="submit">
           {activeStep === CurrentSteps.length -1 ? "Finish" : "Next"}
         </Button>
         </Box>
+
+        </form>
+      </FormProvider>
       </>
       )}
     </>
